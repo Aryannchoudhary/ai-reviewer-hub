@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | AI Reviewer Hub</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <h2>Login</h2>
+            <p>Welcome back to AI Reviewer Hub</p>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" name="username" placeholder="Enter username" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+                </div>
+
+                <button type="submit" class="auth-btn">Login</button>
+            </form>
+
+            <div class="extra-links">
+                <p>Don't have an account? <a href="{% url 'register' %}">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

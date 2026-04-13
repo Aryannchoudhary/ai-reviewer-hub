@@ -1,0 +1,127 @@
+/* GLOBAL */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+}
+
+/* HEADER */
+.header {
+    padding: 12px 20px;
+    background: #161b22;
+    border-bottom: 1px solid #30363d;
+    font-size: 18px;
+}
+
+/* SPLIT SCREEN */
+.split-container {
+    display: flex;
+    height: calc(100vh - 50px);
+}
+
+/* LEFT PANEL (VS CODE STYLE) */
+.left-panel {
+    width: 50%;
+    background: #0d1117;
+    border-right: 1px solid #30363d;
+    padding: 15px;
+}
+
+/* RIGHT PANEL (GITHUB STYLE) */
+.right-panel {
+    width: 50%;
+    background: #0d1117;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* INPUTS */
+textarea, select {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px;
+    background: #010409;
+    color: #c9d1d9;
+    border: 1px solid #30363d;
+    border-radius: 6px;
+}
+
+/* BUTTON */
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #238636;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #2ea043;
+}
+
+/* SECONDARY BUTTON */
+.secondary-btn {
+    background: #21262d;
+}
+
+.secondary-btn:hover {
+    background: #30363d;
+}
+
+/* CODE BLOCK (LIKE GITHUB) */
+pre {
+    background: #010409;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    border: 1px solid #30363d;
+}
+
+/* RESULT CARD */
+.result-section {
+    background: #161b22;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #30363d;
+}
+
+/* STATUS COLORS */
+.error {
+    border-left: 4px solid #f85149;
+}
+
+.warning {
+    border-left: 4px solid #d29922;
+}
+
+.success {
+    border-left: 4px solid #2ea043;
+}
+
+/* SCORE BADGE */
+.score-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #161b22;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #30363d;
+    margin-bottom: 15px;
+}
+
+.score {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* NAV BUTTONS */
+.nav-buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}

@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | AI Reviewer Hub</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">
+            <a href="{% url 'home' %}">AI Reviewer Hub</a>
+        </div>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'submit_code' %}">Submit Code</a></li>
+                    <li><a href="{% url 'review_history' %}">History</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="logout-btn">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+                <div class="profile-info">
+                    <h1>{{ user.username }}</h1>
+                    <p>{{ user.email }}</p>
+                    <span>Member since: {{ user.date_joined|date:"d M Y" }}</span>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <h2>{{ total_reviews }}</h2>
+                    <p>Total Reviews</p>
+                </div>
+                <div class="stat-box good">
+                    <h2>{{ good_reviews }}</h2>
+                    <p>Good Reviews</p>
+                </div>
+                <div class="stat-box average">
+                    <h2>{{ average_reviews }}</h2>
+                    <p>Average Reviews</p>
+                </div>
+                <div class="stat-box poor">
+                    <h2>{{ poor_reviews }}</h2>
+                    <p>Poor Reviews</p>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                
+                <a href="{% url 'dashboard' %}" class="btn secondary-btn">Back to Dashboard</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 AI Reviewer Hub | All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>

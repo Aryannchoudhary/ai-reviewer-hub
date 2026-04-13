@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Reviewer Hub{% endblock %}
+
+{% block content %}
+
+<!-- Prism (for code highlight on RIGHT side) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+<link rel="stylesheet" href="{% static 'css/submit_code.css' %}">
+<script src="{% static 'js/review_interactive.js' %}"></script>
+
+<div class="split-container">
+
+    <!-- 🔵 LEFT SIDE (FORM) -->
+    <div class="left-panel">
+        <h2>Submit Code</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            
+            <label>Language</label>
+            {{ form.language }}
+
+            <label>Paste Code</label>
+            {{ form.code }}
+
+            <button type="submit" class="btn"> Review Code</button>
+        </form>
+
+        <!-- Navigation Buttons -->
+        <div class="nav-buttons">
+            <a href="{% url 'dashboard' %}" class="btn secondary-btn">Dashboard</a>
+            <a href="{% url 'submit_code' %}" class="btn secondary-btn">Reset</a>
+        </div>
+    </div>
+
+    <!-- 🟢 RIGHT SIDE (REVIEW) -->
+    <div class="right-panel">
+
+        <h2>AI Review</h2>
+
+        {% if review %}
+
+            <div class="score-box">
+                <span class="score">{{ review.score }}/10</span>
+                <span>{{ review.language }}</span>
+            </div>
+
+            <!-- Original Code -->
+            <div class="result-section">
+                <h3>Your Code</h3>
+                <pre><code class="language-{{ review.language|lower }}">{{ request.POST.code }}</code></pre>
+            </div>
+
+            {% if review.output %}
+            <div class="result-section">
+                <h3>Expected Output</h3>
+                <p>{{ review.output }}</p>
+            </div>
+            {% endif %}
+
+            {% if review.errors %}
+            <div class="result-section error">
+                <h3>Errors</h3>
+                <ul>
+                    {% for e in review.errors %}
+                        <li>{{ e }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if review.improvements %}
+            <div class="result-section warning">
+                <h3>Improvements</h3>
+                <ul>
+                    {% for i in review.improvements %}
+                        <li>{{ i }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% if review.optimized_code %}
+            <div class="result-section success">
+                <h3>Optimized Code</h3>
+                <pre><code class="language-{{ review.language|lower }}">{{ review.optimized_code }}</code></pre>
+
+                <button class="btn copy-btn" onclick="copyCode('optimized')">
+                    Copy Optimized
+                </button>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <p>No review yet. Submit your code to see AI feedback.</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

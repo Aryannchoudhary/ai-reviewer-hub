@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Review History{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/review_history.css' %}">
+<div class="history-container">
+    <h2>Your Review History</h2>
+    
+    <!-- Stats Bar -->
+    {% if stats %}
+    <div class="stats-bar">
+        <span>Total Reviews: {{ stats.total|default:0 }}</span>
+        <span>Avg Score: {{ stats.avg_score|floatformat:1|default:"N/A" }}/10</span>
+    </div>
+    {% endif %}
+    
+    <!-- Filter Form -->
+    <form method="GET" class="filter-form">
+        <select name="language">
+            <option value="all">All Languages</option>
+            <option value="python" {% if request.GET.language == 'python' %}selected{% endif %}>Python</option>
+            <option value="javascript" {% if request.GET.language == 'javascript' %}selected{% endif %}>JavaScript</option>
+            <option value="java" {% if request.GET.language == 'java' %}selected{% endif %}>Java</option>
+            <option value="cpp" {% if request.GET.language == 'cpp' %}selected{% endif %}>C++</option>
+        </select>
+        
+        <input type="number" name="min_score" min="0" max="10" placeholder="Min Score" value="{{ request.GET.min_score }}">
+        
+        <input type="date" name="start_date" value="{{ request.GET.start_date }}">
+        <input type="date" name="end_date" value="{{ request.GET.end_date }}">
+        
+        <input type="text" name="search" placeholder="Search code..." value="{{ request.GET.search }}">
+        
+        <select name="sort">
+            <option value="date_desc" {% if request.GET.sort == 'date_desc' or not request.GET.sort %}selected{% endif %}>Newest</option>
+            <option value="score_desc" {% if request.GET.sort == 'score_desc' %}selected{% endif %}>Score High-Low</option>
+            <option value="language" {% if request.GET.sort == 'language' %}selected{% endif %}>Language</option>
+        </select>
+        
+        <button type="submit">Filter</button>
+        <a href="{% url 'review_history' %}" class="btn">Reset</a>
+    </form>
+    
+    <a href="{% url 'submit_code' %}" class="btn">New Review</a>
+    {% if reviews %}
+        <!-- Pagination -->
+        {% if reviews.has_other_pages %}
+        <div class="pagination">
+            {% if reviews.has_previous %}
+                <a href="?{{ filter_params }}&page=1" class="btn small">First</a>
+                <a href="?{{ filter_params }}&page={{ reviews.previous_page_number }}" class="btn small">Prev</a>
+            {% endif %}
+            
+            <span>Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}</span>
+            
+            {% if reviews.has_next %}
+                <a href="?{{ filter_params }}&page={{ reviews.next_page_number }}" class="btn small">Next</a>
+                <a href="?{{ filter_params }}&page={{ reviews.paginator.num_pages }}" class="btn small">Last</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="history-list">
+            {% for review in reviews %}
+                <details class="history-item">
+                    <summary class="history-meta">
+                        <h3>{{ review.language|upper }}</h3>
+                        <div class="score-badge">{{ review.score }}/10</div>
+                        <span class="date">{{ review.created_at|date:"M d, Y H:i" }}</span>
+                    </summary>
+                    
+                    <!-- Preview -->
+                    <div class="history-preview">
+                        <pre>{{ review.code|truncatechars:200 }}</pre>
+                    </div>
+                    
+                    <!-- Full Details -->
+                    <div class="review-details">
+                        <h4>Full Code:</h4>
+                        <pre class="full-code">{{ review.code }}</pre>
+                        
+                        {% if review.json_review %}
+                            {% with jr=review.json_review %}
+                                {% if jr.output %}
+                                    <h4>AI Output:</h4>
+                                    <div class="ai-output">{{ jr.output|linebreaks|safe }}</div>
+                                {% endif %}
+                                
+                                {% if jr.errors %}
+                                    <h4>Errors ({{ jr.errors|length }}):</h4>
+                                    <ul>
+                                        {% for error in jr.errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                
+                                {% if jr.improvements %}
+                                    <h4>Improvements ({{ jr.improvements|length }}):</h4>
+                                    <ul>
+                                        {% for imp in jr.improvements %}
+                                            <li>{{ imp }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                
+                                {% if jr.optimized_code %}
+                                    <h4>Optimized Code:</h4>
+                                    <pre class="optimized-code">{{ jr.optimized_code }}</pre>
+                                {% endif %}
+                            {% endwith %}
+                        {% else %}
+                            <p>Review details unavailable.</p>
+                        {% endif %}
+                        
+                        <a href="{% url 'review_result' review.id %}" class="btn">Full Review Page</a>
+                    </div>
+                </details>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination again for bottom -->
+        {% if reviews.has_other_pages %}
+        <div class="pagination">
+            <!-- repeat pagination -->
+            {% if reviews.has_previous %}
+                <a href="?{{ filter_params }}&page=1" class="btn small">First</a>
+                <a href="?{{ filter_params }}&page={{ reviews.previous_page_number }}" class="btn small">Prev</a>
+            {% endif %}
+            
+            <span>Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}</span>
+            
+            {% if reviews.has_next %}
+                <a href="?{{ filter_params }}&page={{ reviews.next_page_number }}" class="btn small">Next</a>
+                <a href="?{{ filter_params }}&page={{ reviews.paginator.num_pages }}" class="btn small">Last</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    {% else %}
+        <p>No reviews match your filters. <a href="?{{ filter_params }}&search=">Clear search</a> or <a href="{% url 'submit_code' %}">Submit code!</a></p>
+    {% endif %}
+</div>
+{% endblock %}

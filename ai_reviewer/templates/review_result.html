@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Code Review Result{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/review_result.css' %}">
+<script src="{% static 'js/review_interactive.js' %}"></script>
+
+<div class="result-container">
+    <div class="result-box">
+        <div class="result-header">
+            <h1>AI Code Review</h1>
+            <div class="score-box">
+                <span class="score">{{ review.score }}/10</span>
+                <span>Language: {{ review.language }}</span>
+            </div>
+        </div>
+
+        <div class="original-code">
+            <h2>Your Original Code</h2>
+            <pre><code class="language-{{ review.language|lower }}">{{ review.code }}</code></pre>
+            <button class="btn copy-btn" onclick="copyCode('original')">Copy Original</button>
+        </div>
+
+        {% if review.json_review %}
+            {% with json_review=review.json_review %}
+                {% if json_review.output %}
+                <div class="result-section">
+                    <h2>Expected Output</h2>
+                    <p>{{ json_review.output }}</p>
+                </div>
+                {% endif %}
+
+                {% if json_review.errors %}
+                <div class="result-section error">
+                    <h2>Errors ({{ json_review.errors|length }})</h2>
+                    <ul>
+                        {% for error in json_review.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if json_review.improvements %}
+                <div class="result-section warning">
+                    <h2>Improvements ({{ json_review.improvements|length }})</h2>
+                    <ul>
+                        {% for imp in json_review.improvements %}
+                            <li>{{ imp }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if json_review.optimized_code %}
+                <div class="result-section success accordion">
+                    <h2 onclick="toggleAccordion(this)">Optimized Code <span class="toggle-icon">+</span></h2>
+                    <div class="accordion-content">
+                        <pre><code class="language-{{ review.language|lower }}">{{ json_review.optimized_code }}</code></pre>
+                        <div class="action-buttons">
+                            <button class="btn copy-btn" onclick="copyCode('optimized')">Copy Optimized</button>
+                            
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endwith %}
+        {% else %}
+            <div class="result-section">
+                <h2>Review Data</h2>
+                <pre>{{ review.result }}</pre>
+            </div>
+        {% endif %}
+
+        <div class="action-buttons">
+            <a href="{% url 'submit_code' %}" class="btn secondary-btn">New Review</a>
+            <a href="{% url 'dashboard' %}" class="btn">Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

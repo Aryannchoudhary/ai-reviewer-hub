@@ -1,0 +1,62 @@
+
+{% load static %}
+
+{% block title %}Dashboard | AI Reviewer Hub{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<section class="dashboard-section">
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1>Welcome, {{ request.user.username }}</h1>
+            <p>Your secure AI-powered code review workspace</p>
+        </div>
+
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <h3>Total Reviews</h3>
+                <p>{{ total_reviews }}</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Secure Submission</h3>
+                <p>Your code reviews are accessible only through your account.</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Private History</h3>
+                <p>Track all previous reviews in one protected place.</p>
+            </div>
+
+            <div class="dashboard-card">
+                <h3>Profile Status</h3>
+                <p>Logged in as <strong>{{ request.user.username }}</strong></p>
+            </div>
+        </div>
+
+        <div class="dashboard-actions">
+            <a href="{% url 'submit_code' %}" class="dashboard-btn">Submit New Code</a>
+            <a href="{% url 'review_history' %}" class="dashboard-btn secondary-btn">View History</a>
+            <a href="{% url 'profile' %}" class="dashboard-btn secondary-btn">My Profile</a>
+        </div>
+
+        <div class="recent-reviews">
+            <h2>Recent Reviews</h2>
+            {% if reviews %}
+                <div class="review-list">
+                    {% for review in reviews %}
+                        <div class="review-item">
+                            <h4>{{ review.language }}</h4>
+                            <p><strong>Score:</strong> {{ review.score }}/10</p>
+                            <p><strong>Date:</strong> {{ review.created_at }}</p>
+                            <a href="{% url 'review_result' review.id %}">View Result</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No reviews found yet. Start by submitting your code.</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
