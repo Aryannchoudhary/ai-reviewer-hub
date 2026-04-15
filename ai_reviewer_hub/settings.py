@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ai_reviewer_hub.wsgi.application'
+WSGI_APPLICATION = 'ai_reviewer_hub.wsgi:application'
 
 
 # Database
