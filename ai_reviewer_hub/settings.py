@@ -67,7 +67,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ai_reviewer_hub.wsgi:application'
+WSGI_APPLICATION = 'ai_reviewer_hub.wsgi.application'
 
 
 # Database
@@ -136,5 +136,3 @@ LOGOUT_REDIRECT_URL = 'home'
 SESSION_COOKIE_AGE = 172800   # 2 days (in seconds)
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
-
-DEBUG = True 
