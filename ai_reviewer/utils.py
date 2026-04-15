@@ -3,7 +3,7 @@ import os
 import json
 import re
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key=os.getenv("Gemini_API_Key"))
 
 def review_code_with_ai(code, language):
     try:
